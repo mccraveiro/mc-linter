@@ -6,10 +6,17 @@ const { CLIEngine } = require('eslint')
 const GitHubApi = require('github')
 const Promise = require('bluebird')
 const {
+  __,
   assoc,
+  filter,
+  isEmpty,
   keys,
+  match,
+  none,
+  not,
   path,
   pick,
+  pipe,
   propOr,
   reduce,
   toPairs,
@@ -39,6 +46,10 @@ github.authenticate({
 })
 
 const linter = new CLIEngine()
+const messageBlacklist = [
+  'Unable to resolve path to module',
+  'should be listed in the project\'s dependencies',
+]
 
 console.log(`Fetching PR #${PR_NUMBER}`)
 
@@ -47,6 +58,16 @@ const groupMessages = (result, message) => {
   newMessage += message.message + '\n'
   return assoc(message.line, newMessage, result)
 }
+
+const matchBlacklist = ({ message }) =>
+  none(
+    pipe(
+      match(__, message),
+      isEmpty,
+      not
+    ),
+    messageBlacklist
+  )
 
 github.pullRequests.getFiles({
   owner: OWNER,
@@ -68,6 +89,7 @@ github.pullRequests.getFiles({
   .then(response => Buffer.from(response.data.content, 'base64').toString())
   .then(linter.executeOnText.bind(linter))
   .then(path(['results', 0, 'messages']))
+  .then(filter(matchBlacklist))
   .then(reduce(groupMessages, {}))
   .then(pick(keys(linesChanged)))
   .then(toPairs)
