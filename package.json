@@ -1,0 +1,20 @@
+{
+  "name": "mc-linter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "eslint": "^4.5.0",
+    "eslint-config-pagarme-base": "^1.0.1",
+    "eslint-plugin-import": "^2.7.0",
+    "github": "^10.0.0",
+    "prompt-confirm": "^1.2.0",
+    "ramda": "^0.24.1"
+  }
+}
