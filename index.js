@@ -16,6 +16,8 @@ const {
   unnest,
 } = require('ramda')
 
+const getLineMapFromPatchString = require('./patch-line-mapper.js')
+
 const USERNAME = process.argv[2]
 const TOKEN = process.argv[3]
 const PR = process.argv[4]
@@ -37,28 +39,6 @@ github.authenticate({
 })
 
 const linter = new CLIEngine()
-
-const getLineMapFromPatchString = (patchString) => {
-  let diffLineIndex = 0
-  let fileLineIndex = 0
-
-  return patchString
-    .split('\n')
-    .reduce((lineMap, line) => {
-      if (line.match(/^@@.*/)) {
-        fileLineIndex = line.match(/\+[0-9]+/)[0].slice(1) - 1
-      } else {
-        diffLineIndex++
-        if (line[0] !== '-') {
-          fileLineIndex++
-          if (line[0] === '+') {
-            lineMap[fileLineIndex] = diffLineIndex
-          }
-        }
-      }
-      return lineMap
-    }, {})
-}
 
 console.log(`Fetching PR #${PR_NUMBER}`)
 
