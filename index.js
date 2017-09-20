@@ -14,11 +14,13 @@ const {
   match,
   none,
   not,
+  omit,
   path,
   pick,
   pipe,
   propOr,
   reduce,
+  splitEvery,
   toPairs,
   unnest,
 } = require('ramda')
@@ -95,13 +97,17 @@ github.pullRequests.getFiles({
   .then(toPairs)
   .map(([line, message]) => ({
     path: file.filename,
+    line,
     position: Number(linesChanged[line]),
     body: message,
   }))
 })
 .then(unnest)
 .tap(console.log)
-.then(comments =>
+.map(omit('line'))
+.tap(comments => console.log(`${comments.length} comments`))
+.then(splitEvery(50))
+.each(comments =>
   new Confirm('Send comments?')
   .run()
   .then((answer) => {
