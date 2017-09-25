@@ -11,7 +11,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "eslint": "^4.5.0",
-    "eslint-config-pagarme-base": "^1.0.1",
+    "eslint-config-pagarme-base": "2.0.0",
     "eslint-plugin-import": "^2.7.0",
     "github": "^10.0.0",
     "prompt-confirm": "^1.2.0",
