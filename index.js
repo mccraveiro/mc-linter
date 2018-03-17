@@ -79,6 +79,7 @@ github.pullRequests.getFiles({
 })
 .then(response => response.data)
 .filter(file => file.filename.match(/\.js$/))
+.filter(file => file.status !== 'renamed')
 .map((file) => {
   const linesChanged = getLineMapFromPatchString(file.patch)
 
