@@ -61,6 +61,13 @@ const groupMessages = (result, message) => {
   return assoc(message.line, newMessage, result)
 }
 
+const prettyPrint = (messagens) => {
+  messagens.forEach((message, index) => {
+    console.log(`${index}) Ln: ${message.line}, Col: ${message.position} - ${message.path}`)
+    console.log(message.body)
+  })
+}
+
 const matchBlacklist = ({ message }) =>
   none(
     pipe(
@@ -104,7 +111,7 @@ github.pullRequests.getFiles({
   }))
 })
 .then(unnest)
-.tap(console.log)
+.tap(prettyPrint)
 .map(omit('line'))
 .tap(comments => console.log(`${comments.length} comments`))
 .then(splitEvery(50))
